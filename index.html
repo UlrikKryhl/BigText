@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Text Resizing</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: white;
+        }
+
+        #fullPageText {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 20px;
+            margin: 0;
+
+            font-family: sans-serif;
+            color: black;
+            background-color: white;
+
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-sizing: border-box;
+
+            resize: none;
+            line-height: 1.2;
+            text-align: center;
+            font-size: 60px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="fullPageText" placeholder="Write!"></textarea>
+
+    <script>
+        const textArea = document.getElementById('fullPageText');
+        const MIN_FONT_SIZE = 10; // Minimum font size in pixels
+        const MAX_FONT_SIZE = 1000; // Maximum font size
+
+        function adjustFontSize() {
+            const text = textArea.value;
+
+            // Reset font size and alignment if empty
+            if (!text.trim()) {
+                textArea.style.fontSize = `${MAX_FONT_SIZE / 2}px`;
+                textArea.style.textAlign = 'center';
+                return;
+            }
+
+            textArea.style.textAlign = 'left'; // Align left for content
+            let currentFontSize = MAX_FONT_SIZE; // Start at maximum
+
+            while (currentFontSize > MIN_FONT_SIZE) {
+                textArea.style.fontSize = `${currentFontSize}px`;
+
+                // Check if the content fits within both width and height
+                if (textArea.scrollWidth <= textArea.clientWidth &&
+                    textArea.scrollHeight <= textArea.clientHeight) {
+                    break;
+                }
+
+                currentFontSize--; // Reduce font size
+            }
+
+            // Apply the finalized font size
+            textArea.style.fontSize = `${currentFontSize}px`;
+        }
+
+        // Adjust on typing
+        textArea.addEventListener('input', adjustFontSize);
+
+        // Adjust on window resize
+        window.addEventListener('resize', adjustFontSize);
+
+        // Initial adjustment
+        document.addEventListener('DOMContentLoaded', adjustFontSize);
+    </script>
+</body>
+</html>
